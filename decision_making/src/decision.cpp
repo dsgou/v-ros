@@ -126,17 +126,20 @@ void Decision_making::callback(const fusion::FusionMsg::ConstPtr& msg)
                     if((duration > 0.4) && (duration < 2.0))
                     {
                         ros::Time time = event_msg.header.stamp;
-                        ofstream storage(session_path + "/decision_making.csv" ,ios::out | ios::app );
-                        storage
-                            <<standUp_time<<"\t"
-                            <<i<<"\t"
-                            <<"2\t"<<
-                        endl;
-                        storage
-                            <<event_msg.header.stamp<<"\t"
-                            <<i<<"\t"
-                            <<"3\t"<<
-                        endl;
+                        if(write_csv){
+                            ofstream storage(session_path + "/decision_making.csv" ,ios::out | ios::app );
+                            storage
+                                <<standUp_time<<"\t"
+                                <<i<<"\t"
+                                <<"2\t"<<
+                            endl;
+                            storage
+                                <<event_msg.header.stamp<<"\t"
+                                <<i<<"\t"
+                                <<"3\t"<<
+                            endl;
+                        }
+                        event_msg.time_needed = duration;
                         event_msg.event = 3;
                         results_publisher.publish(event_msg);
                     }
@@ -169,15 +172,17 @@ void Decision_making::callback(const fusion::FusionMsg::ConstPtr& msg)
                     float prev_dist = temp_boxes.at(1).pos.acc_distance;
                     dist += prev_dist;
                     temp_boxes.front().pos.acc_distance = dist;
-                    if(dist > 4000 && prev_dist < 4000 && write_csv)
+                    if(dist > 4000 && prev_dist < 4000)
                     {
                         ros::Time time = event_msg.header.stamp;
-                        ofstream storage(session_path + "/decision_making.csv" ,ios::out | ios::app );
-                        storage
-                            <<time<<"\t"
-                            <<i<<"\t"
-                            <<"4\t"<<
-                        endl;
+                        if(write_csv){
+                            ofstream storage(session_path + "/decision_making.csv" ,ios::out | ios::app );
+                            storage
+                                <<time<<"\t"
+                                <<i<<"\t"
+                                <<"4\t"<<
+                            endl;
+                        }
                         event_msg.event = 4;
                         results_publisher.publish(event_msg);
                     }
